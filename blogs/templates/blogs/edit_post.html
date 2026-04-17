@@ -1,0 +1,21 @@
+{% extends "blogs/base.html" %}
+
+{% block page_header %}
+  <h4>Edit post: {{ post.title }}</h4>
+{% endblock page_header %}  
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <form action="{% url 'blogs:edit' post.id %}" method='post'>
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <div class="mt-3">
+        <button name="submit" class="btn btn-primary">Save changes</button>
+        <a href="{% url 'blogs:post' post.id %}" class="btn btn-secondary">Cancel</a>
+      </div>  
+      </form>
+    </div>
+  </div>
+{% endblock content %}

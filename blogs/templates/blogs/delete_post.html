@@ -1,0 +1,20 @@
+{% extends "blogs/base.html" %}
+
+{% block page_header %}
+  <h4>Are you sure you want to delete "{{ post.title }}"?</h4>
+{% endblock page_header %}  
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">    
+      <form action="{% url 'blogs:delete' post.id %}" method="post">
+          {% csrf_token %}
+          
+          <div class="mt-3">
+            <button type="submit" class="btn btn-danger opacity-80">Yes, delete</button>
+            <a href="{% url 'blogs:post' post.id %}" class="btn btn-secondary">Cancel</a>
+          </div>  
+      </form>
+    </div>
+  </div>
+{% endblock %}

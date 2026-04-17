@@ -1,0 +1,17 @@
+{% extends "blogs/base.html" %}
+
+{% block content %}
+  <p><h3>{{ post.title }}</h3></p>
+  <p>Created: {{ post.date_added }}</p>
+  <p>{{ post.text }}</p>
+  
+  {% if post.owner == user %}
+    <div class="mt-3">
+      <a href="{% url 'blogs:edit' post.id %}">Edit post</a>
+      <br>
+      <a href="{% url 'blogs:delete' post.id %}">Delete post</a>
+    </div>
+  {% endif %}  
+  <br>
+  <a href="{% url 'blogs:all_posts' %}">Back to all posts</a>
+{% endblock content %}

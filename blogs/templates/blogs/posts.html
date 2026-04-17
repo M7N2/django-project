@@ -1,0 +1,91 @@
+{% extends 'blogs/base.html' %}
+
+{% block page_header %}
+  <h1>All Posts</h1>
+    <div class="mt-4">
+    <a href="{% url 'blogs:new_post' %}" class="btn btn-primary">Add a new post</a>
+  </div>
+{% endblock page_header %}
+
+{% block content %}
+  <div class="row">
+    {% for post in posts %}
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{% url 'blogs:post' post.id %}" class="text-decoration-none">
+                {{ post.title }}
+              </a>
+            </h5>
+            <p class="card-text text-muted small">
+              {{ post.date_added|date:"d M Y" }}
+            </p>
+            <p class="card-text">
+              {{ post.text|truncatewords:20 }}
+            </p>
+            {% if post.owner == user %}
+              <span class="badge bg-secondary opacity-50">Your post</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">No posts have been added yet.</div>
+      </div>
+    {% endfor %}
+  </div>
+  
+    <!-- Pagination -->
+  {% if posts.has_other_pages %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if posts.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; First</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo; First</span>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+        {% endif %}
+        
+        {% for num in posts.paginator.page_range %}
+          {% if posts.number == num %}
+            <li class="page-item active">
+              <span class="page-link">{{ num }}</span>
+            </li>
+          {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        
+        {% if posts.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ posts.next_page_number }}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ posts.paginator.num_pages }}">Last &raquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link">Last &raquo;</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
+{% endblock content %}
