@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import BlogPost
 from .forms import PostForm
 # Access restriction.
@@ -22,7 +22,7 @@ def check_post_owner(request, post):
 @login_required
 def view_post(request, post_id):
     """View a single post"""
-    post = BlogPost.objects.get(id=post_id)
+    post = get_object_or_404(BlogPost, id=post_id)
     context = {'post': post}
     return render(request, 'blogs/post.html', context)    
 
@@ -47,7 +47,7 @@ def create_post(request):
 @login_required
 def edit_post(request, post_id):
     """Editing an existing post."""
-    post = BlogPost.objects.get(id=post_id)
+    post = get_object_or_404(BlogPost, id=post_id)
     check_post_owner(request, post)
 
     if request.method != 'POST':
@@ -64,10 +64,7 @@ def edit_post(request, post_id):
 @login_required
 def delete_post(request, post_id):
     """Delete a post, for owner"""
-    try:
-        post = BlogPost.objects.get(id=post_id, owner=request.user)
-    except BlogPost.DoesNotExist:
-        raise Http404
+    post = get_object_or_404(BlogPost,id=post_id, owner=request.user)
 
     if request.method == 'POST':
         post.delete()
